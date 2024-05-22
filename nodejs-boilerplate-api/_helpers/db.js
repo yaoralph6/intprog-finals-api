@@ -17,12 +17,21 @@ async function initialize() {
 
     // init models and add them to the exported db object
     db.Account = require('../accounts/account.model')(sequelize);
+    db.Player = require('../players/player.model')(sequelize);
+    db.Team = require('../teams/team.model')(sequelize);
     db.RefreshToken = require('../accounts/refresh-token.model')(sequelize);
+    db.Tournament = require('../tournaments/tournament.model')(sequelize); // Add the Tournament model
 
-    // define relationships
+    // Define model relationships
+    db.Team.hasMany(db.Player, { foreignKey: 'teamId' });
+    db.Player.belongsTo(db.Team, { foreignKey: 'teamId' });
     db.Account.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
     db.RefreshToken.belongsTo(db.Account);
-    
+
+    // Define relationships for tournaments
+    // Assuming each tournament has multiple teams and matches (if applicable)
+    db.Tournament.belongsToMany(db.Team, { through: 'TournamentTeams', foreignKey: 'tournamentId' });
+    db.Team.belongsToMany(db.Tournament, { through: 'TournamentTeams', foreignKey: 'teamId' });
     // sync all models with database
     await sequelize.sync();
 }

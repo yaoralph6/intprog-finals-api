@@ -20,7 +20,8 @@ module.exports = {
     getById,
     create,
     update,
-    delete: _delete
+    deactivate
+    //delete: _delete
 };
 
 async function authenticate({ email, password, ipAddress }) {
@@ -28,6 +29,10 @@ async function authenticate({ email, password, ipAddress }) {
 
     if (!account || !account.isVerified || !(await bcrypt.compare(password, account.passwordHash))) {
         throw 'Email or password is incorrect';
+    }
+
+    if(account.isActive == false) {
+        throw 'Account is disabled';
     }
 
     // authentication successful so generate jwt and refresh tokens
@@ -199,9 +204,16 @@ async function update(id, params) {
     return basicDetails(account);
 }
 
-async function _delete(id) {
+/*async function _delete(id) {
     const account = await getAccount(id);
     await account.destroy();
+}*/
+
+async function deactivate(id) {
+    const account = await getAccount(id);
+    
+    account.isActive = false;
+    await account.save();
 }
 
 // helper functions
@@ -242,8 +254,8 @@ function randomTokenString() {
 }
 
 function basicDetails(account) {
-    const { id, title, firstName, lastName, email, role, created, updated, isVerified } = account;
-    return { id, title, firstName, lastName, email, role, created, updated, isVerified };
+    const { id, title, firstName, lastName, email, role, created, updated, isVerified, isActive } = account;
+    return { id, title, firstName, lastName, email, role, created, updated, isVerified, isActive };
 }
 
 async function sendVerificationEmail(account, origin) {
