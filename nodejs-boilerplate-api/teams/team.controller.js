@@ -42,13 +42,13 @@ function create(req, res, next) {
 }
 
 function updateSchema(req, res, next) {
-    const schema = {
+    const schema = Joi.object({
         name: Joi.string().empty(''),
         location: Joi.string().empty(''),
         coach: Joi.string().empty(''),
         region: Joi.string().empty(''),
         manager: Joi.string().empty('')
-    };
+    });
     validateRequest(req, next, schema);
 }
 
