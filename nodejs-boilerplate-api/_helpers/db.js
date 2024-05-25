@@ -1,4 +1,4 @@
-const config = require('config.json');
+const config = require('../config/config.json')
 const mysql = require('mysql2/promise');
 const { Sequelize } = require('sequelize');
 
@@ -20,7 +20,7 @@ async function initialize() {
     db.Player = require('../players/player.model')(sequelize);
     db.Team = require('../teams/team.model')(sequelize);
     db.RefreshToken = require('../accounts/refresh-token.model')(sequelize);
-    db.Tournament = require('../tournaments/tournament.model')(sequelize); // Add the Tournament model
+    
 
     // Define model relationships
     db.Team.hasMany(db.Player, { foreignKey: 'teamId' });
@@ -30,8 +30,7 @@ async function initialize() {
 
     // Define relationships for tournaments
     // Assuming each tournament has multiple teams and matches (if applicable)
-    db.Tournament.belongsToMany(db.Team, { through: 'TournamentTeams', foreignKey: 'tournamentId' });
-    db.Team.belongsToMany(db.Tournament, { through: 'TournamentTeams', foreignKey: 'teamId' });
+    
     // sync all models with database
     await sequelize.sync();
 }

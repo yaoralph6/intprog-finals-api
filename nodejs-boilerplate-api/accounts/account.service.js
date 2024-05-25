@@ -1,4 +1,4 @@
-const config = require('config.json');
+const config = require('../config/config.json')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require("crypto");
@@ -20,8 +20,8 @@ module.exports = {
     getById,
     create,
     update,
-    deactivate
-    //delete: _delete
+    deactivate,
+    delete: _delete
 };
 
 async function authenticate({ email, password, ipAddress }) {
@@ -31,7 +31,7 @@ async function authenticate({ email, password, ipAddress }) {
         throw 'Email or password is incorrect';
     }
 
-    if(account.isActive == false) {
+    if (account.isActive == false) {
         throw 'Account is disabled';
     }
 
@@ -49,6 +49,7 @@ async function authenticate({ email, password, ipAddress }) {
         refreshToken: refreshToken.token
     };
 }
+
 
 async function refreshToken({ token, ipAddress }) {
     const refreshToken = await getRefreshToken(token);
@@ -204,17 +205,17 @@ async function update(id, params) {
     return basicDetails(account);
 }
 
-/*async function _delete(id) {
+async function _delete(id) {
     const account = await getAccount(id);
     await account.destroy();
-}*/
+}
 
 async function deactivate(id) {
     const account = await getAccount(id);
-    
     account.isActive = false;
     await account.save();
 }
+
 
 // helper functions
 

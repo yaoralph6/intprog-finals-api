@@ -12,9 +12,11 @@
         "host": "smtp.ethereal.email",
         "port": 587,
         "auth": {
-            "user":"vicente.douglas4@ethereal.email",
+            "user": "vicente.douglas4@ethereal.email",
             "pass": "2Q7Sqxngqtszgh2TPD"
-
+        },
+        "tls": {
+            "rejectUnauthorized": false
         }
     }
 }
